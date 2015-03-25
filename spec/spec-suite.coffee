@@ -1,7 +1,6 @@
 _ = require 'underscore-plus'
 fs = require 'fs-plus'
 path = require 'path'
-require './spec-helper'
 
 requireSpecs = (specDirectory, specType) ->
   for specFilePath in fs.listTreeSync(specDirectory) when /-spec\.(coffee|js)$/.test specFilePath
@@ -11,6 +10,7 @@ requireSpecs = (specDirectory, specType) ->
     setSpecDirectory(specDirectory)
 
 setSpecField = (name, value) ->
+  return unless jasmine.getEnv().currentRunner?
   specs = jasmine.getEnv().currentRunner().specs()
   return if specs.length is 0
   for index in [specs.length-1..0]

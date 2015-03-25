@@ -114,7 +114,9 @@ class WorkspaceElement extends HTMLElement
 
   runPackageSpecs: ->
     [projectPath] = atom.project.getPaths()
-    ipc.send('run-package-specs', path.join(projectPath, 'spec')) if projectPath
+    packageMetadata = require(path.join(projectPath, 'package.json'))
+    useJasmine2 = packageMetadata['use-jasmine-2']
+    ipc.send('run-package-specs', {specDirectory: path.join(projectPath, 'spec'), useJasmine2}) if projectPath
 
 atom.commands.add 'atom-workspace',
   'window:increase-font-size': -> @getModel().increaseFontSize()

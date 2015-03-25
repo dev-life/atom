@@ -233,8 +233,8 @@ class AtomApplication
       win = BrowserWindow.fromWebContents(event.sender)
       @applicationMenu.update(win, template, keystrokesByCommand)
 
-    ipc.on 'run-package-specs', (event, specDirectory) =>
-      @runSpecs({resourcePath: global.devResourcePath, specDirectory: specDirectory, exitWhenDone: false})
+    ipc.on 'run-package-specs', (event, {specDirectory, useJasmine2}) =>
+      @runSpecs({resourcePath: global.devResourcePath, specDirectory, useJasmine2, exitWhenDone: false})
 
     ipc.on 'command', (event, command) =>
       @emit(command)
@@ -446,7 +446,7 @@ class AtomApplication
   #   :specPath - The directory to load specs from.
   #   :safeMode - A Boolean that, if true, won't run specs from ~/.atom/packages
   #               and ~/.atom/dev/packages, defaults to false.
-  runSpecs: ({exitWhenDone, resourcePath, specDirectory, logFile, safeMode}) ->
+  runSpecs: ({exitWhenDone, resourcePath, specDirectory, logFile, safeMode, useJasmine2}) ->
     if resourcePath isnt @resourcePath and not fs.existsSync(resourcePath)
       resourcePath = @resourcePath
 
@@ -458,7 +458,7 @@ class AtomApplication
     isSpec = true
     devMode = true
     safeMode ?= false
-    new AtomWindow({bootstrapScript, resourcePath, exitWhenDone, isSpec, devMode, specDirectory, logFile, safeMode})
+    new AtomWindow({bootstrapScript, resourcePath, exitWhenDone, isSpec, devMode, specDirectory, logFile, safeMode, useJasmine2})
 
   runBenchmarks: ({exitWhenDone, specDirectory}={}) ->
     try
